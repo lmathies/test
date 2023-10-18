@@ -74,7 +74,7 @@ country_urls <- str_c(base_of_url, short_links)
 
 # prepare for download/storing
 file_names <- str_c(basename(short_links), ".html")
-dir.create("html") # create a new folder to store all htmls 
+dir.create("html_files") # create a new folder to store all htmls 
 
 # loop: download and store
 for ( i in seq_along(short_links) ){
