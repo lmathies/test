@@ -48,5 +48,5 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-# folder with files
-html_files
+# test script
+test.R
