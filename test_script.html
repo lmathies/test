@@ -1808,7 +1808,7 @@ display: none;
 
 <h1 class="title toc-ignore">Assignment 3 - Web data</h1>
 <h4 class="author">Lea Mathies + lmathies</h4>
-<h4 class="date">October 18, 2023 | 13:23:09 | CEST</h4>
+<h4 class="date">October 18, 2023 | 13:24:23 | CEST</h4>
 
 </div>
 
@@ -1859,21 +1859,6 @@ the file names and reporting the total number of files contained by the
 folder. Make sure that the folder itself is not synced to GitHub using
 <code>.gitignore</code>.</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># parse URL</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://en.wikipedia.org/w/index.php?title=List_of_tallest_towers&amp;oldid=1175962653&quot;</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>url_parsed <span class="ot">&lt;-</span> <span class="fu">read_html</span>(url)</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># extract links from table</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>xpath <span class="ot">&lt;-</span> <span class="st">&quot;//table[@class = &#39;wikitable sortable&#39;][5]//tbody//td[position()=3]/a[1]&quot;</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>anchors <span class="ot">&lt;-</span> <span class="fu">html_nodes</span>(url_parsed, <span class="at">xpath =</span> xpath)</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>links <span class="ot">&lt;-</span> <span class="fu">html_attr</span>(anchors, <span class="st">&quot;href&quot;</span>)</span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co"># fetch real wikipedia pages</span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>baseurl <span class="ot">&lt;-</span> <span class="st">&quot;http://en.wikipedia.org&quot;</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>country_urls <span class="ot">&lt;-</span> <span class="fu">str_c</span>(baseurl, links)</span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>HTML <span class="ot">&lt;-</span> <span class="fu">list</span>()</span></code></pre></div>
 <p><br></p>
 </div>
 
