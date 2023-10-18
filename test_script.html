@@ -1808,7 +1808,7 @@ display: none;
 
 <h1 class="title toc-ignore">Assignment 3 - Web data</h1>
 <h4 class="author">Lea Mathies + lmathies</h4>
-<h4 class="date">October 18, 2023 | 13:24:23 | CEST</h4>
+<h4 class="date">October 18, 2023 | 14:25:02 | CEST</h4>
 
 </div>
 
@@ -1859,6 +1859,47 @@ the file names and reporting the total number of files contained by the
 folder. Make sure that the folder itself is not synced to GitHub using
 <code>.gitignore</code>.</li>
 </ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># parse URL</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://en.wikipedia.org/w/index.php?title=List_of_tallest_towers&amp;oldid=1175962653&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>url_parsed <span class="ot">&lt;-</span> <span class="fu">read_html</span>(url)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># extract links from table</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>xpath <span class="ot">&lt;-</span> <span class="st">&quot;//table[@class = &#39;wikitable sortable&#39;][5]//tbody//td[position()=3]/a[1]&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>anchor_nodes <span class="ot">&lt;-</span> <span class="fu">html_nodes</span>(url_parsed, <span class="at">xpath =</span> xpath)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>short_links <span class="ot">&lt;-</span> <span class="fu">html_attr</span>(anchor_nodes, <span class="st">&quot;href&quot;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co"># fetch real Wikipedia pages</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>base_of_url <span class="ot">&lt;-</span> <span class="st">&quot;http://en.wikipedia.org&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>country_urls <span class="ot">&lt;-</span> <span class="fu">str_c</span>(base_of_url, short_links)</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co"># prepare for download/storing</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>file_names <span class="ot">&lt;-</span> <span class="fu">str_c</span>(<span class="fu">basename</span>(short_links), <span class="st">&quot;.html&quot;</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">&quot;html&quot;</span>) <span class="co"># create a new folder to store all htmls </span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co"># loop: download and store</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="cf">for</span> ( i <span class="cf">in</span> <span class="fu">seq_along</span>(short_links) ){</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  <span class="co"># url</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>  url <span class="ot">&lt;-</span> country_urls[i]</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>  <span class="co"># fname</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>  file_name <span class="ot">&lt;-</span> file_names[i]</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>  <span class="co"># download</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>  <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">file.exists</span>(<span class="fu">str_c</span>(<span class="st">&quot;html_files/&quot;</span>, file_name))) <span class="fu">download.file</span>(url, <span class="at">destfile =</span> <span class="fu">str_c</span>(<span class="st">&quot;html_files/&quot;</span>, file_name))</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>}</span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co"># read in files</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#HTML[[i]] &lt;- read_html(str_c(&quot;html_files/&quot;, file_name))</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co"># provide proof of success</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>files_in_folder <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;html_files/.&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>  <span class="fu">print</span>()</span></code></pre></div>
+<pre><code>[1] &quot;China.html&quot;                &quot;Malaysia.html&quot;            
+[3] &quot;North_Macedonia.html&quot;      &quot;Qatar.html&quot;               
+[5] &quot;Saudi_Arabia.html&quot;         &quot;South_Korea.html&quot;         
+[7] &quot;Thailand.html&quot;             &quot;United_Arab_Emirates.html&quot;
+[9] &quot;Vietnam.html&quot;             </code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>number_of_files <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;html_files/.&quot;</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">print</span>()</span></code></pre></div>
+<pre><code>[1] 9</code></pre>
 <p><br></p>
 </div>
 

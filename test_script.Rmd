@@ -59,6 +59,42 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 c) Now, consider the Wikipedia articles on all countries in the original table. Provide polite code that downloads the linked article HTMLs to a local folder retaining the article names as file file names. Explain why your code follows best practice of polite scraping by implementing at least three practices (bullet points are sufficient). Provide proof that the download was performed successfully by listing the file names and reporting the total number of files contained by the folder. Make sure that the folder itself is not synced to GitHub using `.gitignore`.
 
 ```{r}
+# parse URL
+url <- "https://en.wikipedia.org/w/index.php?title=List_of_tallest_towers&oldid=1175962653"
+url_parsed <- read_html(url)
+
+# extract links from table
+xpath <- "//table[@class = 'wikitable sortable'][5]//tbody//td[position()=3]/a[1]"
+anchor_nodes <- html_nodes(url_parsed, xpath = xpath)
+short_links <- html_attr(anchor_nodes, "href")
+
+# fetch real Wikipedia pages
+base_of_url <- "http://en.wikipedia.org"
+country_urls <- str_c(base_of_url, short_links)
+
+# prepare for download/storing
+file_names <- str_c(basename(short_links), ".html")
+dir.create("html") # create a new folder to store all htmls 
+
+# loop: download and store
+for ( i in seq_along(short_links) ){
+  # url
+  url <- country_urls[i]
+  # fname
+  file_name <- file_names[i]
+  # download
+  if ( !file.exists(str_c("html_files/", file_name))) download.file(url, destfile = str_c("html_files/", file_name))
+}
+
+# read in files
+#HTML[[i]] <- read_html(str_c("html_files/", file_name))
+
+# provide proof of success
+files_in_folder <- list.files(path = "html_files/.") |> 
+  print()
+
+number_of_files <- length(list.files(path = "html_files/.")) |> 
+  print()
 
 ```
 
