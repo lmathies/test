@@ -1,0 +1,79 @@
+---
+title: "Assignment 3 - Web data"
+author: "Lea Mathies + lmathies"
+date: "`r format(Sys.time(), '%B %d, %Y | %H:%M:%S | %Z')`"
+output:
+  html_document:
+    code_folding: show
+    df_print: paged
+    highlight: tango
+    number_sections: no
+    theme: cosmo
+    toc: no
+---
+  
+<style>
+div.answer {background-color:#f3f0ff; border-radius: 5px; padding: 20px;}
+</style>
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+```{r, include = T}
+library(tidyverse)
+library(purrr)
+library(kableExtra)
+library(rvest)
+library(stringr)
+library(xml2)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+<br>
+
+c) Now, consider the Wikipedia articles on all countries in the original table. Provide polite code that downloads the linked article HTMLs to a local folder retaining the article names as file file names. Explain why your code follows best practice of polite scraping by implementing at least three practices (bullet points are sufficient). Provide proof that the download was performed successfully by listing the file names and reporting the total number of files contained by the folder. Make sure that the folder itself is not synced to GitHub using `.gitignore`.
+
+```{r}
+# parse URL
+url <- "https://en.wikipedia.org/w/index.php?title=List_of_tallest_towers&oldid=1175962653"
+url_parsed <- read_html(url)
+
+# extract links from table
+xpath <- "//table[@class = 'wikitable sortable'][5]//tbody//td[position()=3]/a[1]"
+anchors <- html_nodes(url_parsed, xpath = xpath)
+links <- html_attr(anchors, "href")
+
+# fetch real wikipedia pages
+baseurl <- "http://en.wikipedia.org"
+country_urls <- str_c(baseurl, links)
+
+# 
+HTML <- list()
+```
+
+<br>
